@@ -41,7 +41,7 @@ typedef struct {
 	uint16_t z;
 }bmi160_raw_data_t;
 
-void bmi160_init(void);
+freertos_i2c_flag_t bmi160_init(void);
 bmi160_raw_data_t bmi160_get_data_accel(void);
 bmi160_raw_data_t bmi160_get_data_gyro(void);
 

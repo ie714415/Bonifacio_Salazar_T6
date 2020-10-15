@@ -13,7 +13,7 @@
 /*Global declaratios*/
 static freertos_i2c_config_t bmi160_i2c_config;
 
-void bmi160_init(void){
+freertos_i2c_flag_t bmi160_init(void){
 	freertos_i2c_flag_t bmi160_sucess = freertos_i2c_fail;
 
 	/*Start port and freertos i2c inicialization */
@@ -45,6 +45,7 @@ void bmi160_init(void){
 			bmi160_sucess = freertos_i2c_transmit(bmi160_i2c_config.i2c_number, &gyro_normal , 1, BMI160_SLAVE_ADDRESS, BMI160_CMD_REGISTER, 1);
 		}
 	}
+	return bmi160_sucess;
 }
 
 
