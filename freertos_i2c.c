@@ -27,7 +27,7 @@ static inline I2C_Type * freertos_i2c_get_i2c_base(freertos_i2c_number_t i2c_num
 
 static void fsl_i2c_callback(I2C_Type *base, i2c_master_handle_t *handle, status_t status, void *userData);
 
-freertos_i2c_flag_t freeartos_i2c_init(freertos_i2c_config_t config)
+freertos_i2c_flag_t freertos_i2c_init(freertos_i2c_config_t config)
 {
 	freertos_i2c_flag_t retval = freertos_i2c_fail;
 	i2c_master_config_t fsl_i2c_master_config;
@@ -81,7 +81,7 @@ freertos_i2c_flag_t freeartos_i2c_init(freertos_i2c_config_t config)
 	return retval;
 }
 
-freertos_i2c_flag_t freeartos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
+freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
 {
 	freertos_i2c_flag_t flag = freertos_i2c_fail;
 	i2c_master_transfer_t xfer;
@@ -109,7 +109,7 @@ freertos_i2c_flag_t freeartos_i2c_transmit(freertos_i2c_number_t i2c_number, uin
 	return flag;
 }
 
-freertos_i2c_flag_t freeartos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
+freertos_i2c_flag_t freertos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
 {
 	freertos_i2c_flag_t flag = freertos_i2c_fail;
 	i2c_master_transfer_t xfer;

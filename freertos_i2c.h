@@ -36,8 +36,8 @@ typedef struct
 	uint8_t pin_mux;
 } freertos_i2c_config_t;
 
-freertos_i2c_flag_t freeartos_i2c_init(freertos_i2c_config_t config);
-freertos_i2c_flag_t freeartos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize);
-freertos_i2c_flag_t freeartos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize);
+freertos_i2c_flag_t freertos_i2c_init(freertos_i2c_config_t config);
+freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize);
+freertos_i2c_flag_t freertos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize);
 
 #endif /* FREERTOS_I2C_H_ */
