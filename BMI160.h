@@ -7,7 +7,7 @@
 #define BMI160_H_
 
 #include "freertos_i2c.h"
-#include "fsl_clock.h";
+#include "fsl_clock.h"
 #include "fsl_port.h"
 #include "stdint.h"
 #include "FreeRTOS.h"
