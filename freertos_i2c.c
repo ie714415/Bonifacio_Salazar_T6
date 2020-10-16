@@ -81,7 +81,7 @@ freertos_i2c_flag_t freertos_i2c_init(freertos_i2c_config_t config)
 	return retval;
 }
 
-freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
+freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint8_t lenght, uint8_t slaveaddr)
 {
 	freertos_i2c_flag_t flag = freertos_i2c_fail;
 	i2c_master_transfer_t xfer;
@@ -93,8 +93,7 @@ freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint
 		xfer.direction = kI2C_Write;
 		xfer.flags = kI2C_TransferDefaultFlag;
 		xfer.slaveAddress = slaveaddr;
-		xfer.subaddress = subaddr;
-		xfer.subaddressSize = subsize;
+		xfer.subaddressSize = 0;
 
 		xSemaphoreTake(freertos_i2c_handles[i2c_number].mutex_tx_rx, portMAX_DELAY);
 
@@ -109,22 +108,32 @@ freertos_i2c_flag_t freertos_i2c_transmit(freertos_i2c_number_t i2c_number, uint
 	return flag;
 }
 
-freertos_i2c_flag_t freertos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint16_t lenght, uint8_t slaveaddr, uint32_t subaddr, uint8_t subsize)
+freertos_i2c_flag_t freertos_i2c_receive(freertos_i2c_number_t i2c_number, uint8_t * buffer, uint8_t lenght, uint8_t slaveaddr, uint8_t subaddr)
 {
 	freertos_i2c_flag_t flag = freertos_i2c_fail;
 	i2c_master_transfer_t xfer;
 
 	if(freertos_i2c_handles[i2c_number].is_init)
 	{
+		xfer.data = &subaddr;
+		xfer.dataSize = lenght;
+		xfer.direction = kI2C_Write;
+		xfer.flags = kI2C_TransferDefaultFlag;
+		xfer.slaveAddress = slaveaddr;
+		xfer.subaddressSize = 0;
+
+		xSemaphoreTake(freertos_i2c_handles[i2c_number].mutex_tx_rx, portMAX_DELAY);
+
+		I2C_MasterTransferNonBlocking(freertos_i2c_get_i2c_base(i2c_number), &freertos_i2c_handles[i2c_number].fsl_i2c_master_handle, &xfer);
+
+		xSemaphoreTake(freertos_i2c_handles[i2c_number].tx_rx_sem, portMAX_DELAY);
+
 		xfer.data = buffer;
 		xfer.dataSize = lenght;
 		xfer.direction = kI2C_Read;
 		xfer.flags = kI2C_TransferDefaultFlag;
 		xfer.slaveAddress = slaveaddr;
-		xfer.subaddress = subaddr;
-		xfer.subaddressSize = subsize;
-
-		xSemaphoreTake(freertos_i2c_handles[i2c_number].mutex_tx_rx, portMAX_DELAY);
+		xfer.subaddressSize = 0;
 
 		I2C_MasterTransferNonBlocking(freertos_i2c_get_i2c_base(i2c_number), &freertos_i2c_handles[i2c_number].fsl_i2c_master_handle, &xfer);
 
@@ -233,19 +242,19 @@ static void fsl_i2c_callback(I2C_Type *base, i2c_master_handle_t *handle, status
 	{
 		if(I2C0 == base)
 		{
-			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c0].mutex_tx_rx, &xHigherPriorityTaskWoken);
+			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c0].tx_rx_sem, &xHigherPriorityTaskWoken);
 		}
 		else if(I2C1 == base)
 		{
-			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c1].mutex_tx_rx, &xHigherPriorityTaskWoken);
+			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c1].tx_rx_sem, &xHigherPriorityTaskWoken);
 		}
 		else if(I2C2 == base)
 		{
-			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c2].mutex_tx_rx, &xHigherPriorityTaskWoken);
+			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c2].tx_rx_sem, &xHigherPriorityTaskWoken);
 		}
 		else
 		{
-			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c3].mutex_tx_rx, &xHigherPriorityTaskWoken);
+			xSemaphoreGiveFromISR(freertos_i2c_handles[freertos_i2c3].tx_rx_sem, &xHigherPriorityTaskWoken);
 		}
 	}
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);

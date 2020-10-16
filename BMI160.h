@@ -12,6 +12,7 @@
 #include "stdint.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "task.h"
 
 /*bmi160 registers*/
 #define BMI160_SLAVE_ADDRESS		0x68
